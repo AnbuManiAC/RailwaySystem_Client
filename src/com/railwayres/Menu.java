@@ -11,8 +11,10 @@ import com.railway.db.PassengerTable;
 import com.railway.db.StationTable;
 import com.railway.db.TicketTable;
 import com.railway.db.TrainTable;
+import com.railway.db.UserTable;
 import com.railway.train.Train;
 import com.railway.train.booking.Booking;
+import com.railway.train.booking.Cancellation;
 import com.railway.train.booking.Passenger;
 import com.railway.train.booking.Ticket;
 
@@ -26,16 +28,33 @@ public class Menu {
 	StationTable stations = StationTable.getInstance();
 	PassengerTable passengers = PassengerTable.getInstance();
 	TicketTable tickets = TicketTable.getInstance();
+	UserTable users = UserTable.getInstance();
 
+	public void showTitle() {
+		System.out.println("\n******************************");
+		System.out.println("  Railway Reservation System ");
+		System.out.println("******************************");
+	}
 	
-	public void showMenu() {
-
+	public void showMenu(int i) {
+		System.out.println("\n-----MENU-----");
+		System.out.println("1. Show list of Trains");
+		System.out.println("2. Search Train");
+		System.out.println("3. Book Ticket");
+		System.out.println("4. Cancel Ticket");
+		System.out.println("5. Check Ticket Status");
+		System.out.println("6. Print Tickets");
+		System.out.println("7. Show all tickets");
+		System.out.println("8. Logout");
 		
+		System.out.print("Choose any of the above options : ");
+	}
+	public void showMenu() {
 		menu:
 			while(innerloop)
 			{
 				System.out.println("\n-----MENU-----");
-				System.out.println("\n1. Show all trains\n2. Search Train\n3. Book Ticket\n4. Cancel Ticket\n5. Check Ticket Status\n6. Show tickets\n7. Logout\n\n");
+				System.out.println("\n1. Show all trains\n2. Search Train\n3. Book Ticket\n4. Cancel Ticket\n5. Check Ticket Status\n6. Show user tickets\n7. Show all tickets\n8. Logout\n\n");
 				System.out.println("Enter your choice : ");
 				choice = sc.next();
 				switch(choice) {
@@ -177,7 +196,6 @@ public class Menu {
 								else {
 									int i=1;
 									List<Ticket> passengerTickets = new ArrayList<>();
-
 									while(i<=numberOfTicket){
 										if(numberOfTicket==1)
 											System.out.println("\nPassenger details\n");
@@ -242,7 +260,6 @@ public class Menu {
 												}
 												passengers.insertPassenger(passenger);
 												passengerTickets.add(passengerTicket);
-												
 											}
 									}
 									System.out.println("\n----------Here's your ticket\n");
@@ -259,12 +276,13 @@ public class Menu {
 				case "4":
 					System.out.println("\nEnter PNR to cancle ticket : ");
 					String pnr = sc.next();
-					if(Booking.cancelTicket(pnr)) {
+					if(Cancellation.cancelTicket(pnr)) {
 						System.out.println("\nTicket cancelled successfully\n");
 					}
 					else {
 						System.out.println("\nInvalid PNR! Enter valid PNR.\n");
 					}
+		
 					break;
 					
 				case "5":
@@ -280,6 +298,21 @@ public class Menu {
 					break;
 					
 				case "6":
+					List<Ticket> userTickets = users.getUserAccessMapping();
+					if(userTickets!=null && userTickets.size()>0) {
+						for(Ticket t:userTickets)
+							t.generateTicket();
+					}
+//					if(userTickets!=null)
+//							System.out.println("not null");
+//					if(userTickets.size()>0)
+//							System.out.println("greater than 0");
+					else {
+						System.out.println("\nNo ticktes found.");
+					}
+					break;
+					
+				case "7":
 					List<Ticket> berthTicket = tickets.getBerthTicket();
 					LinkedList<Ticket> racTicket = tickets.getRacTicket();
 					LinkedList<Ticket> waitingList = tickets.getWaitingList();
@@ -302,8 +335,9 @@ public class Menu {
 					}
 					break;
 					
-				case "7":
+				case "8":
 					innerloop = false;
+					users.getUsers().put(users.getCurrentUser(), false);
 					System.out.println("\nSuccessfully logged out\n");
 					return;				
 				default:
@@ -312,7 +346,6 @@ public class Menu {
 			
 				}
 			}
-		
 	}
 	private static boolean isValidName(String name) {
 		if(name.length()>2 && name.matches("[a-zA-z]+"))

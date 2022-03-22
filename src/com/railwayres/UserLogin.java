@@ -18,17 +18,13 @@ public class UserLogin {
 	UserTable users = UserTable.getInstance();
 	User user;
 	
-	
 	Scanner sc = new Scanner(System.in);
 	String choice;
 	boolean outerloop = true;
 
-	public void showUserLogin() {
+	public void showUserLogin(Menu menu) {
 		home:
 		while(outerloop) {
-				System.out.println("\n******************************");
-				System.out.println("  Railway Reservation System");
-				System.out.println("******************************");
 				System.out.println("\n1. Register\n2. Login\n3. Exit\n");
 				System.out.println("\nEnter your choice : ");
 				choice = sc.nextLine();
@@ -73,9 +69,10 @@ public class UserLogin {
 							if(users.checkUser(username)) {
 								System.out.println("\nEnter Password : ");
 								pwd = sc.nextLine();
-								if(users.isExistingUser(username, pwd)) {
+								user = users.searchUser(username,pwd);
+								if(user!=null) {
 									System.out.println("\nSuccessfully logged in\n");
-									Menu menu = new Menu();
+									users.getUsers().put(user, true);
 									menu.showMenu();
 									continue home;
 								}
