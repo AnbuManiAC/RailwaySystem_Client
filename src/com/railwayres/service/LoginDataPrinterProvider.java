@@ -1,4 +1,4 @@
-package com.railwayres.serviceProvider;
+package com.railwayres.service;
 
 import com.railway.service.LoginDataPrinter;
 
@@ -14,6 +14,9 @@ public class LoginDataPrinterProvider implements LoginDataPrinter{
 	
 	public void showSignupMessage() {
 		System.out.println("\nSuccessfully registered!");
+	}
+	public void showLoginTOContinue() {
+		System.out.println("\nLogin to proceed.");
 	}
 
 }
